@@ -1,0 +1,155 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
+import java.util.Scanner;
+public class Deck {
+    private static ArrayList<Card> cards = new ArrayList<>();
+    private static ArrayList<Card> dealt = new ArrayList<>();
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        createDeck();
+        while (true) {
+            System.out.print(
+                    "\n1.PrintDeck\n2.PrintCards\n3.CompareCards\n4.SameCards\n5.SortCard\n6.FindCard\n7.DealCards\n8.Exit\n> ");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    printDeck();
+                    break;
+                case 2:
+                    printCard();
+                    break;
+                case 3:
+                    compareCards(createCard(sc), createCard(sc));
+
+                    break;
+                case 4:
+                    sameCard();
+                    break;
+                case 5:
+                    sortCard();
+                    break;
+                case 6:
+                    System.out.println("Found card at index: " + findCard(createCard(sc)));
+                    break;
+                case 7:
+                    DealCards();
+                    break;
+                case 8:
+                    System.exit(1);
+                    break;
+                default:
+                    System.out.println("Invalid Input!!");
+            }
+        }
+    }
+    private static Card createCard(Scanner sc) {
+        System.out.println("Enter type and number of card");
+        Card ret = new Card(Card.SUITS.valueOf(sc.nextLine().toUpperCase().strip()), sc.nextInt());
+        sc.nextLine();
+        return ret;
+    }
+    private static void createDeck() {
+        for (Card.SUITS suit : Card.SUITS.values())
+            for (int rank = 13; rank >= 1; rank--)
+                cards.add(new Card(suit, rank));
+        Collections.shuffle(cards);
+    }
+    private static void printDeck() {
+        for (Card card : cards)
+            System.out.println(card);
+    }
+
+    private static void printCard() {
+        for (Card card : dealt)
+            System.out.println(card);
+    }
+    private static void sameCard() {
+        boolean flag = true;
+        for (int i = 0; i < dealt.size(); i++) {
+            if (i == 0)
+                continue;
+            if (dealt.get(i).isSame(dealt.get(i - 1))) {
+                flag = false;
+                System.out.println("Cards at position " + (i - 1) + " and " +
+                        i + " are same");
+            }
+
+        }
+        if (flag == true) {
+            System.out.println("No same cards found!!");
+        }
+    }
+    private static void compareCards(Card c1, Card c2) {
+        int compare = c1.compare(c2);
+        if (compare < 0) {
+            System.out.println(c2.toString() + " is greater than " + c1.toString());
+        } else if (compare > 0) {
+            System.out.println(c1.toString() + " is greater than " + c2.toString());
+        } else {
+            System.out.println("Both cards are equal");
+        }
+    }
+    private static void sortCard() {
+        Collections.sort(dealt, Comparator.comparing(Card::getSuit).thenComparing(Card::getRank));
+    }
+    private static int findCard(Card c1) {
+        for (int i = 0; i < cards.size(); i++) {
+            if (c1.isSame(cards.get(i)))
+                return i;
+        }
+        return -1;
+    }
+
+    private static void DealCards() {
+        for (int i = 0; i < 5; i++) {
+            dealt.add(cards.get(new Random().nextInt(cards.size())));
+        }
+    }
+    public static class Card {
+        public static enum SUITS {
+            HEARTS, SPADE, DIAMONDS, CLUBS;
+        }
+        private SUITS suit;
+        private int rank;
+        Card(SUITS suit, int rank) {
+            this.suit = suit;
+            this.rank = rank;
+        }
+        Card() {
+            this.suit = SUITS.HEARTS;
+            this.rank = 1;
+        }
+        public SUITS getSuit() {
+            return suit;
+        }
+        public int getRank() {
+            return rank;
+        }
+        public boolean isSame(Card c1) {
+            return (c1.getSuit() == this.getSuit()) && (c1.getRank() == this.getRank());
+        }
+        public int compare(Card c1) {
+            return getRank() - c1.getRank();
+        }
+        @Override
+        public String toString() {
+            String ret = "";
+            if (this.rank > 10) {
+                if (this.rank == 11) {
+                    ret += "Jack";
+
+                } else if (this.rank == 12) {
+                    ret += "Queen";
+                } else if (this.rank == 13) {
+                    ret += "King";
+                }
+            } else {
+                ret += this.rank;
+            }
+            return ret + " Of " + this.suit.toString();
+        }
+    }
+}
