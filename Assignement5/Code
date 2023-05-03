@@ -1,1 +1,223 @@
+Part 1 - Implement the generic Shapes class as an interface s so that we can
+implement concrete classes like circle, triangle, rectangle class from it.
 
+INPUT:
+public interface Shape {
+float calculateShapeArea();
+float calculateShapePerimeter();
+
+//float pi = 3.14f;
+}
+public class Square implements Shape{
+float area, perimeter, side;
+
+public Square(int i) {
+side = i;
+}
+@Override
+public float calculateShapeArea(){
+area = side*side;
+return area;
+
+}
+@Override
+public float calculateShapePerimeter(){
+perimeter = 4*side;
+return 0;
+}
+public String toString()
+{
+return "Dimension of Square is " + side +"," + "Area of Square is " + area +
+"," + "Perimeter of Square is " + perimeter+".";
+}
+}
+
+public class Rectangle implements Shape{
+float area, perimeter, length, breadth;
+
+public Rectangle(int i, int j) {
+length = i;
+breadth = j;
+}
+@Override
+public float calculateShapeArea(){
+area = length*breadth;
+return area;
+}
+@Override
+public float calculateShapePerimeter(){
+
+perimeter = 2*(length+breadth);
+return 0;
+}
+public String toString()
+{
+return "Dimension of Rectangle is " + length+","+ breadth+ "," + "Area of
+Rectangle is " + area + "," + "Perimeter of Rectangle is " + perimeter+".";
+}
+}
+
+public class Triangle implements Shape{
+float area, perimeter, side1, side2, side3;
+
+public Triangle(int i, int j, int k) {
+side1 = i;
+side2 = j;
+side3 = k;
+}
+@Override
+public float calculateShapeArea(){
+area = (float)((0.5)*side1*side2*side3);
+return area;
+}
+@Override
+public float calculateShapePerimeter(){
+perimeter = side1+side2+side3;
+return 0;
+
+}
+public String toString()
+{
+return "Dimension of Triangle is " + side1+","+ side2+","+side3+ "," + "Area
+of Triangle is " + area + "," + "Perimeter of Triangle is " + perimeter+".";
+}
+}
+public Circle(int i) {
+rad = i;
+}
+@Override
+public float calculateShapeArea(){
+area = (float)(Math.PI*Math.pow(rad,2));
+return area;
+}
+@Override
+public float calculateShapePerimeter(){
+perimeter = (float)(Math.PI*rad*2);
+return 0;
+}
+public String toString()
+{
+return "Dimension of Circle is " + rad + "," + "Area of Circle is " + area +"," +
+"Perimeter of Circle is " + perimeter+".";
+}
+}
+
+public class Demo {
+public static void main(String[] args){
+Triangle t = new Triangle(5,6,7);
+t.calculateShapeArea();
+t.calculateShapePerimeter();
+System.out.println(t);
+
+Square s = new Square(5);
+s.calculateShapeArea();
+s.calculateShapePerimeter();
+System.out.println(s);
+
+Rectangle r = new Rectangle(5,6);
+r.calculateShapeArea();
+r.calculateShapePerimeter();
+System.out.println(r);
+
+Circle c = new Circle(5);
+c.calculateShapeArea();
+c.calculateShapePerimeter();
+System.out.println(c);
+}
+}
+
+
+# Part 2 
+
+Part 2 - Refer the excel sheet for salary calculation.
+In this exercise, take an
+abstract class which is defined below and develop two classes. The abstract
+class represents the basic building block for employees in a personnel
+database. The code is shown below:
+
+INPUT:
+public abstract class Employee {
+private String name;
+private String address;
+
+public String getName() {
+return name;
+}
+
+public void setName(String name) {
+this.name = name;
+
+}
+
+public String getAddress() {
+return address;
+}
+
+public void setAddress(String address) {
+this.address = address;
+}
+
+protected int basicSalary;
+
+public Employee(String name, String address, int basicSalary) {
+this.name = name;
+this.address = address;
+this.basicSalary = basicSalary;
+}
+
+public abstract int calculateMonthlySalary();
+
+// Getters and setters for name, address and basicSalary
+}
+public class NormalEmployee extends Employee {
+public NormalEmployee(String name, String address, int basicSalary) {
+super(name, address, basicSalary);
+}
+
+@Override
+public int calculateMonthlySalary() {
+return basicSalary / 12;
+}
+}
+
+public class BonusEmployee extends Employee {
+private int monthlyBonus;
+
+public BonusEmployee(String name, String address, int basicSalary, int
+monthlyBonus) {
+super(name, address, basicSalary);
+this.monthlyBonus = monthlyBonus;
+}
+
+@Override
+public int calculateMonthlySalary() {
+return (basicSalary / 12) + monthlyBonus;
+}
+
+// Getter and setter for monthlyBonus
+}
+
+public class TestEmployee {
+public static void main(String[] args) {
+
+NormalEmployee normalEmployee = new NormalEmployee("Gargi Joshi",
+"Wakad", 1200000);
+BonusEmployee bonusEmployee = new BonusEmployee("Ananya Patil",
+"VimanNagar", 1200000, 50000);
+
+System.out.println("Normal Employee:");
+System.out.println("Name: " + normalEmployee.getName());
+System.out.println("Address: " + normalEmployee.getAddress());
+System.out.println("Monthly Salary: " +
+normalEmployee.calculateMonthlySalary());
+
+System.out.println();
+
+System.out.println("Bonus Employee:");
+System.out.println("Name: " + bonusEmployee.getName());
+System.out.println("Address: " + bonusEmployee.getAddress());
+System.out.println("Monthly Salary: " +
+bonusEmployee.calculateMonthlySalary());
+
+}
+}
