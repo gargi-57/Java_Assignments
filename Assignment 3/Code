@@ -1,1 +1,232 @@
+INPUT:
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Scanner;
+public class StudentList {
+private static ArrayList<Student> StudentList = new ArrayList<>();
+private static Scanner sc = new Scanner(System.in);
+private static boolean sorted = false;
+public static void main(String[] args) {
+System.out.print("1: Insert\n2. Delete\n3. Update\n4. Search\n5.
+Display\n> ");
+int input;
+while ((input = sc.nextInt()) != -1) {
+sc.nextLine();
+switchInput(input);
+System.out.print("1: Insert\n2. Delete\n3. Update\n4. Search\n5.
+Display\n> ");
 
+}
+}
+private static void switchInput(int input) {
+try {
+switch (input) {
+case 1:
+processAdd();
+sorted = false;
+break;
+case 2:
+processDelete();
+break;
+case 3:
+processUpdate();
+sorted = false;
+break;
+case 4:
+processSearch();
+break;
+case 5:
+processDisplay();
+break;
+}
+} catch (Exception e) {
+e.printStackTrace();
+}
+}
+private static void processAdd() throws Exception {
+System.out.println("Enter PRN, Name, DOB, Marks");
+addStudent(sc.nextLine(), sc.nextLine(), sc.nextLine(), sc.nextInt());
+sc.nextLine();
+}
+private static void processDelete() {
+System.out.println("Enter PRN");
+
+delete(sc.nextLine());
+}
+private static void processUpdate() throws Exception {
+System.out.println("Enter PRN to update");
+Student found = getByPRN(sc.nextLine());
+if (found != null) {
+System.out.println("Enter Name, DOB, [Marks (-1 to not update)]");
+update(found, new Student("", sc.nextLine(), sc.nextLine(), sc.nextInt()));
+sc.nextLine();
+return;
+}
+System.out.println("Invalid PRN");
+}
+private static void processSearch() throws Exception {
+System.out.println("1. Search by PRN\n2. Search by Name\n3. Search by
+Index");
+int input = sc.nextInt();
+sc.nextLine();
+switch (input) {
+case 1:
+System.out.println(searchByPRN(sc.nextLine()));
+break;
+case 2:
+System.out.println(searchByName(sc.nextLine()));
+break;
+case 3:
+System.out.println(searchByIndex(sc.nextInt()));
+sc.nextLine();
+break;
+}
+}
+private static void processDisplay() {
+if (!sorted) {
+Collections.sort(StudentList, new CompareByMarks());
+
+sorted = true;
+}
+displayList();
+}
+private static Student getByPRN(String PRN) {
+for (Student student : StudentList) {
+if (student.getPRN().equals(PRN))
+return student;
+}
+return null;
+}
+private static void addStudent(String PRN, String name, String DOB, int
+totalMarks) throws Exception {
+Student toAdd = getByPRN(PRN);
+if (toAdd == null)
+StudentList.add(new Student(PRN, name, DOB, totalMarks));
+}
+private static void update(Student toBeUpdated, Student updated) throws
+Exception {
+if (updated.getName() != "")
+toBeUpdated.setName(updated.getName());
+if (updated.getMDOB() != "")
+toBeUpdated.setMDOB(updated.getMDOB());
+if (updated.getMarks() != -1)
+toBeUpdated.setMarks(updated.getMarks());
+}
+private static void delete(String PRN) {
+Student toDelete = getByPRN(PRN);
+if (toDelete != null)
+StudentList.remove(toDelete);
+}
+private static Student searchByPRN(String PRN) {
+
+return getByPRN(PRN);
+}
+private static Student searchByName(String Name) {
+for (Student student : StudentList) {
+if (student.getName().equals(Name))
+return student;
+}
+return null;
+}
+private static Student searchByIndex(int index) {
+if (index < StudentList.size() && index >= 0)
+return StudentList.get(index);
+return null;
+}
+private static void displayList() {
+System.out.println("Students:\n");
+for (Student s : StudentList)
+System.out.println(s + "\n");
+}
+static class Student {
+private final String PRN;
+private String Name;
+private DOB mDOB;
+private int totalMarks;
+public int getMarks() {
+return this.totalMarks;
+}
+public void setMarks(int marks) {
+this.totalMarks = marks;
+}
+
+public void setName(String Name) {
+this.Name = Name;
+}
+public void setMDOB(String mDOB) {
+String[] split = mDOB.split("/");
+this.mDOB = new DOB(Integer.parseInt(split[0]),
+Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+}
+public String getPRN() {
+return this.PRN;
+}
+public String getName() {
+return this.Name;
+}
+public String getMDOB() {
+return this.mDOB.toString();
+}
+private String calculateGrade() {
+if (this.totalMarks > 81)
+return "A";
+else if (this.totalMarks > 61 && this.totalMarks < 81)
+return "B+";
+else if (this.totalMarks > 41 && this.totalMarks < 61)
+return "B";
+else
+return "F";
+}
+Student() {
+this.PRN = "";
+this.Name = "";
+this.mDOB = new DOB();
+
+this.totalMarks = -1;
+}
+Student(String PRN, String Name, String DOB, int totalMarks) throws
+Exception {
+this.PRN = PRN;
+this.Name = Name;
+String[] split = DOB.split("/");
+this.totalMarks = totalMarks;
+if (split.length == 3) {
+this.mDOB = new DOB(Integer.parseInt(split[0]),
+Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+} else {
+throw new Exception("Invalid DOB");
+}
+}
+@Override
+public String toString() {
+return "PRN: " + this.PRN + "\nName: " + this.Name + "\nDOB: " +
+this.mDOB + "\nMarks: "
++ ((this.totalMarks == -
+1) ? "N/A" : this.totalMarks) + "\nGrade: " + this.calculateGrade();
+}
+private class DOB {
+private int date, month, year;
+DOB() {
+this.date = 0;
+this.month = 0;
+this.year = 0;
+}
+DOB(int date, int month, int year) {
+this.date = date;
+this.month = month;
+
+this.year = year;
+}
+@Override
+public String toString() {
+return date + "/" + month + "/" + year;
+}
+}
+}
+static class CompareByMarks implements Comparator<Student> {
+public int compare(Student a, Student b) {
+return a.totalMarks - b.totalMarks;
+}
+}
+}
